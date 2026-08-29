@@ -1,5 +1,7 @@
 # ScrumConcept
 
+<img width="1507" height="650" alt="Screenshot 2026-08-30 at 3 28 22 AM" src="https://github.com/user-attachments/assets/dff99932-6601-4be3-a026-a6c98041e2c8" />
+
 ScrumConcept is a small, lightweight proof of concept for Scrum project
 management. It provides a Jira-inspired sprint board, product backlog, sprint
 metrics, issue creation, issue filtering, and workflow status updates.
