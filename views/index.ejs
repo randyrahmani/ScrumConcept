@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= project.name %> · Sprint board</title>
+  <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+</head>
+<body class="bg-body-tertiary">
+  <nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top shadow-sm">
+    <div class="container-fluid px-3 px-lg-4">
+      <a class="navbar-brand fw-bold" href="/">ScrumConcept</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation" aria-controls="mainNavigation" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="mainNavigation">
+        <div class="navbar-nav me-auto">
+          <a class="nav-link" href="#overview">Overview</a>
+          <a class="nav-link active" aria-current="page" href="#board">Sprint board</a>
+          <a class="nav-link" href="#backlog">Backlog</a>
+        </div>
+        <button class="btn btn-primary my-2 my-md-0" data-bs-toggle="modal" data-bs-target="#createIssueModal">Create issue</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container-fluid px-3 px-lg-4 py-4">
+    <% if (message) { %>
+      <div class="alert alert-light border alert-dismissible fade show" role="alert"><%= message %><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+    <% } %>
+
+    <section id="overview" class="mb-4">
+      <div class="row align-items-end g-3 mb-4">
+        <div class="col">
+          <div class="small fw-bold text-uppercase text-secondary mb-1"><%= project.key %> / Active sprint</div>
+          <h1 class="h2 fw-bold mb-1"><%= sprint.name %></h1>
+          <p class="text-secondary mb-0"><%= sprint.goal %></p>
+        </div>
+        <div class="col-auto text-secondary"><strong class="text-body"><%= sprint.startsAt %></strong> — <strong class="text-body"><%= sprint.endsAt %></strong></div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-6 col-xl-3"><div class="card h-100 shadow-sm"><div class="card-body"><div class="fs-4 fw-bold"><%= stats.completed %>/<%= stats.total %></div><div class="small text-secondary">Issues complete</div></div></div></div>
+        <div class="col-6 col-xl-3"><div class="card h-100 shadow-sm"><div class="card-body"><div class="fs-4 fw-bold"><%= stats.progress %>%</div><div class="small text-secondary mb-2">Sprint progress</div><div class="progress" role="progressbar" aria-label="Sprint progress" aria-valuenow="<%= stats.progress %>" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar" style="width: <%= stats.progress %>%"></div></div></div></div></div>
+        <div class="col-6 col-xl-3"><div class="card h-100 shadow-sm"><div class="card-body"><div class="fs-4 fw-bold"><%= stats.pointsLeft %></div><div class="small text-secondary">Points remaining</div></div></div></div>
+        <div class="col-6 col-xl-3"><div class="card h-100 shadow-sm"><div class="card-body"><div class="fs-4 fw-bold"><%= stats.daysLeft %></div><div class="small text-secondary">Days remaining</div></div></div></div>
+      </div>
+    </section>
+
+    <div class="input-group mb-4">
+      <span class="input-group-text" aria-hidden="true">Search</span>
+      <input id="issueSearch" class="form-control" type="search" placeholder="Filter issues by key, title, or assignee" aria-label="Search issues">
+    </div>
+
+    <section id="board" class="mb-5">
+      <div class="d-flex justify-content-between align-items-end gap-3 mb-3">
+        <div><h2 class="h4 fw-bold mb-1">Sprint board</h2><div class="text-secondary">Move work forward as your team makes progress.</div></div>
+        <span class="badge rounded-pill text-bg-secondary"><%= stats.total %> issues</span>
+      </div>
+      <div class="row g-3 align-items-stretch">
+        <% board.forEach((column) => { %>
+          <div class="col-12 col-md-6 col-xl-3">
+            <div class="bg-secondary-subtle border rounded-3 p-3 h-100">
+              <div class="d-flex justify-content-between align-items-center mb-3"><h3 class="h6 fw-bold text-uppercase mb-0"><%= column.label %></h3><span class="badge text-bg-light border"><%= column.tasks.length %></span></div>
+              <% column.tasks.forEach((task) => { %>
+                <article class="card mb-3 shadow-sm" data-search="<%= `${task.key} ${task.title} ${task.assignee}`.toLowerCase() %>">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between gap-2 mb-2"><span class="badge text-bg-light border"><%= task.type %></span><span class="small text-secondary fw-semibold"><%= task.key %></span></div>
+                    <h4 class="h6 card-title mb-3"><%= task.title %></h4>
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                      <div class="small"><span class="badge text-bg-primary me-1"><%= task.assignee %></span><span class="text-secondary"><%= task.priority %> · <%= task.points %> pt</span></div>
+                      <form method="post" action="/issues/<%= task.id %>/status">
+                        <label class="visually-hidden" for="status-<%= task.id %>">Move <%= task.key %></label>
+                        <select class="form-select form-select-sm" id="status-<%= task.id %>" name="status" title="Move issue" onchange="this.form.submit()">
+                          <% board.forEach((option) => { %><option value="<%= option.status %>" <%= option.status === task.status ? 'selected' : '' %>><%= option.label %></option><% }) %>
+                        </select>
+                      </form>
+                    </div>
+                  </div>
+                </article>
+              <% }) %>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+
+    <section id="backlog" class="mb-4">
+      <h2 class="h4 fw-bold mb-1">Product backlog</h2>
+      <p class="text-secondary">Ideas lined up for a future sprint.</p>
+      <div class="table-responsive border rounded-3 bg-body shadow-sm">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light"><tr><th scope="col">Issue</th><th scope="col">Type</th><th scope="col">Priority</th><th scope="col">Points</th></tr></thead>
+          <tbody>
+            <% backlog.forEach((item) => { %><tr data-search="<%= `${item.key} ${item.title}`.toLowerCase() %>"><td><span class="small text-secondary fw-semibold me-2"><%= item.key %></span><strong><%= item.title %></strong></td><td><%= item.type %></td><td><%= item.priority %></td><td><%= item.points %></td></tr><% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="border-top py-3 text-secondary small">ScrumConcept · Offline workspace</footer>
+  </main>
+
+  <div class="modal fade" id="createIssueModal" tabindex="-1" aria-labelledby="createIssueTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <form class="modal-content" method="post" action="/issues">
+        <div class="modal-header"><div><div class="small fw-bold text-uppercase text-secondary"><%= project.key %> project</div><h2 class="modal-title h5" id="createIssueTitle">Create a new issue</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body">
+          <div class="mb-3"><label class="form-label" for="title">Summary</label><input class="form-control" id="title" name="title" required maxlength="100" placeholder="What needs to be done?"></div>
+          <div class="mb-3"><label class="form-label" for="description">Description</label><textarea class="form-control" id="description" name="description" rows="2" placeholder="Add a little context (optional)"></textarea></div>
+          <div class="row g-3">
+            <div class="col-6"><label class="form-label" for="type">Issue type</label><select class="form-select" id="type" name="type"><option>Task</option><option>Story</option><option>Bug</option></select></div>
+            <div class="col-6"><label class="form-label" for="priority">Priority</label><select class="form-select" id="priority" name="priority"><option>Medium</option><option>High</option><option>Low</option><option>Critical</option></select></div>
+            <div class="col-6"><label class="form-label" for="assignee">Assignee</label><input class="form-control" id="assignee" name="assignee" placeholder="Unassigned"></div>
+            <div class="col-3"><label class="form-label" for="points">Points</label><input class="form-control" id="points" name="points" type="number" min="0" max="21" value="1"></div>
+            <div class="col-3"><label class="form-label" for="status">Status</label><select class="form-select" id="status" name="status"><option value="todo">To do</option><option value="progress">In progress</option><option value="review">Review</option></select></div>
+          </div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary">Create issue</button></div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/assets/app.js"></script>
+</body>
+</html>
