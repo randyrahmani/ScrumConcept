@@ -7,7 +7,7 @@ metrics, issue creation, issue filtering, and workflow status updates.
 The application currently uses Node.js, Express, EJS, Bootstrap, and in-memory
 data. It is intended to evolve into a full MEAN-stack application.
 
-## Run and Setup
+## SETUP AND RUN
 
 The project needs Git, Node.js, npm, and the project's npm packages before it
 can run ScrumConcept. MongoDB and Angular are not required for the current proof
@@ -37,7 +37,7 @@ node --version
 npm --version
 ```
 
-All three commands must print a version. If a command is not found, restart the
+node version must be the latest or v18+. All three commands must print a version. If a command is not found, restart the
 terminal and confirm that its installer added the program to the system `PATH`.
 
 ### 4. Clone the repository
