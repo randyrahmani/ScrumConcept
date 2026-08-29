@@ -1,3 +1,6 @@
+/**
+ * Describes a time-boxed sprint and the goal displayed on the dashboard.
+ */
 export default class Sprint {
   constructor({ id, name, goal, startsAt, endsAt, status = "active" }) {
     this.id = id;

@@ -3,7 +3,12 @@ import Project from "../models/project.js";
 import Sprint from "../models/sprint.js";
 import Task from "../models/task.js";
 
+/**
+ * Creates a fresh set of demonstration records for each server process.
+ * These records will eventually be replaced by data loaded from MongoDB.
+ */
 export function createPlaceholderData() {
+  // The proof of concept displays one project with one active sprint.
   const project = new Project({
     id: 1,
     key: "SC",
@@ -19,6 +24,7 @@ export function createPlaceholderData() {
     endsAt: "6 Sep"
   });
 
+  // Tasks are work committed to the active sprint and appear on the board.
   const tasks = [
     new Task({ id: 101, key: "SC-101", title: "Draft the onboarding checklist", description: "Outline the essential steps for a new workspace owner.", status: "todo", priority: "High", assignee: "Product", points: 3, type: "Story" }),
     new Task({ id: 102, key: "SC-102", title: "Add empty state to backlog", status: "todo", priority: "Low", assignee: "Engineering", points: 2, type: "Task" }),
@@ -30,6 +36,7 @@ export function createPlaceholderData() {
     new Task({ id: 108, key: "SC-108", title: "Agree on definition of done", status: "done", priority: "Medium", assignee: "Team", points: 2, type: "Task" })
   ];
 
+  // Backlog items are future work and do not contribute to sprint metrics.
   const backlog = [
     new ProductBacklogItem({ id: 109, key: "SC-109", title: "Invite collaborators by email", type: "Story", priority: "High", points: 5 }),
     new ProductBacklogItem({ id: 110, key: "SC-110", title: "Export sprint summary", type: "Task", priority: "Medium", points: 3 }),

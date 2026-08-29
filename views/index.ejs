@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
 </head>
 <body class="bg-body-tertiary">
+  <%# Bootstrap collapses this navigation into a menu on narrow screens. %>
   <nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top shadow-sm">
     <div class="container-fluid px-3 px-lg-4">
       <a class="navbar-brand fw-bold" href="/">ScrumConcept</a>
@@ -23,10 +24,12 @@
   </nav>
 
   <main class="container-fluid px-3 px-lg-4 py-4">
+    <%# Route handlers pass short feedback messages through the query string. %>
     <% if (message) { %>
       <div class="alert alert-light border alert-dismissible fade show" role="alert"><%= message %><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
     <% } %>
 
+    <%# Sprint overview and metrics are calculated by dashboardData in server.js. %>
     <section id="overview" class="mb-4">
       <div class="row align-items-end g-3 mb-4">
         <div class="col">
@@ -45,11 +48,13 @@
       </div>
     </section>
 
+    <%# public/app.js uses this input to filter all elements with data-search. %>
     <div class="input-group mb-4">
       <span class="input-group-text" aria-hidden="true">Search</span>
       <input id="issueSearch" class="form-control" type="search" placeholder="Filter issues by key, title, or assignee" aria-label="Search issues">
     </div>
 
+    <%# The server groups the flat task array into one object per workflow status. %>
     <section id="board" class="mb-5">
       <div class="d-flex justify-content-between align-items-end gap-3 mb-3">
         <div><h2 class="h4 fw-bold mb-1">Sprint board</h2><div class="text-secondary">Move work forward as your team makes progress.</div></div>
@@ -83,6 +88,7 @@
       </div>
     </section>
 
+    <%# Backlog items are separate from active sprint tasks and sprint metrics. %>
     <section id="backlog" class="mb-4">
       <h2 class="h4 fw-bold mb-1">Product backlog</h2>
       <p class="text-secondary">Ideas lined up for a future sprint.</p>
@@ -99,6 +105,7 @@
     <footer class="border-top py-3 text-secondary small">ScrumConcept · Offline workspace</footer>
   </main>
 
+  <%# Bootstrap's JavaScript controls this modal; submitting it posts to /issues. %>
   <div class="modal fade" id="createIssueModal" tabindex="-1" aria-labelledby="createIssueTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <form class="modal-content" method="post" action="/issues">
@@ -119,6 +126,7 @@
     </div>
   </div>
 
+  <%# Both scripts are served locally, preserving offline runtime operation. %>
   <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="/assets/app.js"></script>
 </body>
